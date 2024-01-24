@@ -69,7 +69,7 @@ Current release info
 | Name | Downloads | Version | Platforms |
 | --- | --- | --- | --- |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-libsecp256k1-green.svg)](https://anaconda.org/conda-forge/libsecp256k1) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/libsecp256k1.svg)](https://anaconda.org/conda-forge/libsecp256k1) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/libsecp256k1.svg)](https://anaconda.org/conda-forge/libsecp256k1) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/libsecp256k1.svg)](https://anaconda.org/conda-forge/libsecp256k1) |
-| [![Conda Recipe](https://img.shields.io/badge/recipe-libsecp256k1--2-green.svg)](https://anaconda.org/conda-forge/libsecp256k1-2) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/libsecp256k1-2.svg)](https://anaconda.org/conda-forge/libsecp256k1-2) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/libsecp256k1-2.svg)](https://anaconda.org/conda-forge/libsecp256k1-2) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/libsecp256k1-2.svg)](https://anaconda.org/conda-forge/libsecp256k1-2) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-libsecp256k1--1-green.svg)](https://anaconda.org/conda-forge/libsecp256k1-1) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/libsecp256k1-1.svg)](https://anaconda.org/conda-forge/libsecp256k1-1) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/libsecp256k1-1.svg)](https://anaconda.org/conda-forge/libsecp256k1-1) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/libsecp256k1-1.svg)](https://anaconda.org/conda-forge/libsecp256k1-1) |
 
 Installing libsecp256k1
 =======================
@@ -81,16 +81,16 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `libsecp256k1, libsecp256k1-2` can be installed with `conda`:
+Once the `conda-forge` channel has been enabled, `libsecp256k1, libsecp256k1-1` can be installed with `conda`:
 
 ```
-conda install libsecp256k1 libsecp256k1-2
+conda install libsecp256k1 libsecp256k1-1
 ```
 
 or with `mamba`:
 
 ```
-mamba install libsecp256k1 libsecp256k1-2
+mamba install libsecp256k1 libsecp256k1-1
 ```
 
 It is possible to list all of the versions of `libsecp256k1` available on your platform with `conda`:

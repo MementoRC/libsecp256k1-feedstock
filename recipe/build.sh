@@ -1,52 +1,35 @@
 #!/usr/bin/env bash
-set -ex
+set -eox pipefail
 
-# Prepare post-install tests
-TEST_DIR="${RECIPE_DIR}/shared_standalone_tests"
-cp ${SRC_DIR}/src/tests.c ${TEST_DIR}/src
-cp ${SRC_DIR}/src/tests_exhaustive.c ${TEST_DIR}/src
-cp ${SRC_DIR}/src/secp256k1.c ${TEST_DIR}/src
-(cd ${SRC_DIR}; tar cf - include | (cd ${TEST_DIR}; tar xf -))
-(cd ${SRC_DIR}; tar cf - contrib | (cd ${TEST_DIR}; tar xf -))
-(cd ${SRC_DIR}; tar cf - cmake | (cd ${TEST_DIR}/src; tar xf -))
-(cd ${SRC_DIR}/src; tar cf - *.h modules/*/*.h wycheproof/*.h | (cd ${TEST_DIR}/src; tar xf -))
+./autogen.sh
+./configure \
+            '--enable-shared' \
+            '--disable-dependency-tracking' \
+            '--with-pic' \
+            '--enable-module-extrakeys' \
+            '--enable-module-recovery' \
+            '--enable-module-schnorrsig' \
+            '--enable-experimental' \
+            '--enable-module-ecdh' \
+            '--enable-benchmark=no' \
+            '--enable-tests=yes' \
+            '--enable-exhaustive-tests=yes' \
+            --prefix=${PREFIX}
 
-# Build environment
-export SECP256K1_BUILD_SHARED_LIBS="ON"
-export SECP256K1_INSTALL_HEADERS="OFF"
-export SECP256K1_INSTALL="ON"
+make
+make check
 
-BUILD_DIR="build"
+make install
 
-mkdir -p ${BUILD_DIR}
+if [[ "$target_platform" == win* ]]; then
+  mkdir -p ${PREFIX}/Library/bin ${PREFIX}/Library/include ${PREFIX}/Library/lib ${PREFIX}/Library/lib/pkgconfig
 
-# Build & Install
-cd ${BUILD_DIR}
-  cmake ${CMAKE_ARGS} \
-      -S ${SRC_DIR} \
-      -B . \
-      -D CMAKE_BUILD_TYPE=Release \
-      -D CMAKE_PREFIX_PATH=${PREFIX} \
-      -D CMAKE_INSTALL_PREFIX=${PREFIX} \
-      -D SECP256K1_ENABLE_MODULE_RECOVERY=ON \
-      -D BUILD_SHARED_LIBS=${SECP256K1_BUILD_SHARED_LIBS} \
-      -D SECP256K1_INSTALL_HEADERS=${SECP256K1_INSTALL_HEADERS} \
-      -D SECP256K1_INSTALL=${SECP256K1_INSTALL} \
-      -D SECP256K1_BUILD_BENCHMARKS=OFF \
-      -D SECP256K1_BUILD_TESTS=ON \
-      -D SECP256K1_BUILD_EXHAUSTIVE_TESTS=OFF
+  /usr/bin/install -c -m 644 ${PREFIX}/include/secp256k1*.h ${PREFIX}/Library/include
 
-  echo "Installing Library" >&2
-  echo "   PKG_NAME=${PKG_NAME}" >&2
-  echo "   SECP256K1_BUILD_SHARED_LIBS=${SECP256K1_BUILD_SHARED_LIBS}" >&2
-  echo "   SECP256K1_INSTALL_HEADERS=${SECP256K1_INSTALL_HEADERS}" >&2
-  echo "   SECP256K1_INSTALL=${SECP256K1_INSTALL}" >&2
+  /usr/bin/install -c -m 644 ${PREFIX}/lib/secp256k1.dll.lib ${PREFIX}/Library/lib/libsecp256k1.dll.lib
+  /usr/bin/install -c -m 644 ${PREFIX}/lib/secp256k1.lib ${PREFIX}/Library/lib/libsecp256k1.lib
+  /usr/bin/install -c -m 644 ${PREFIX}/lib/pkgconfig/libsecp256k1.pc ${PREFIX}/Library/lib/pkgconfig/libsecp256k1.pc
 
-  cmake --build . --parallel ${CPU_COUNT}
-  cmake --build . --target tests
-  cmake --install .
+  /usr/bin/install -c ${PREFIX}/bin/secp256k1-?.dll ${PREFIX}/Library/bin/libsecp256k1-1.dll
+fi
 
-  cd ..
-
-# Clean build directory
-rm -rf ${BUILD_DIR}
